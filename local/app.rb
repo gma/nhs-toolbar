@@ -42,6 +42,10 @@ helpers do
   end
 end
 
+get "/api-test" do
+  haml(:api_test, :layout => :playground)
+end
+
 get "/api/search" do
   content_type "application/json"
   data_sets = []
