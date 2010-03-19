@@ -40,20 +40,31 @@ var app = {
       if (dataSets.length) {
         $('<div/>', { id: 'nhs-injection-button' })
           .append('<a/>').find('a')
-            .attr({ href: '#' })
             .text('Show related data')
+            .click(function() { app.chooseDataSet(dataSets); })
           .end()
           .fadeIn()
           .appendTo('body');
       }
     });
-  }
+  },
   
+  chooseDataSet: function(dataSets) {
+    $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
+    var presenter = $('#nhs-injection-presenter');
+    presenter
+      .css({ left: $(window).width() / 2 - presenter.width() / 2 })
+      .fadeIn();
+    // When we get more data sets, let's show a chooser...
+    showDataSet(dataSets[0]);
+  },
+  
+  showDataSet: function(dataSet) {
+    
+  }  
 };
 
 $(document).ready(function() {
-  console.log('woohoo');
-  
   app.setupAjaxCallbacks();
   app.searchForDataSets(app.getKeywords());
 });
