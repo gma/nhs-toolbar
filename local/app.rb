@@ -19,11 +19,28 @@ DATA_SETS = {
     "series" => [
       {
         "name" => "Women",
-        "data" => [43643, 41775, 38789, 39125, 39267, 46302, 50265, 48601, 50879, 47399]
+        "data" => [
+          43643,
+          41775,
+          38789,
+          39125,
+          39267,
+          46302,
+          50265,
+          48601,
+          50879,
+          47399
+        ]
       }
     ]
   }
 }
+
+helpers do
+  def jsonp_callback(json, callback)
+    callback.nil? ? json : "#{callback}(#{json})"
+  end
+end
 
 get "/api/search" do
   content_type "application/json"
@@ -35,12 +52,12 @@ get "/api/search" do
       end
     end
   end
-  data_sets.to_json
+  jsonp_callback(data_sets.to_json, params[:callback])
 end
 
 get "/api/data-set/:name" do
   content_type "application/json"
   set = DATA_SETS[params[:name]]
   set.nil? && raise(Sinatra::NotFound)
-  set.to_json
+  jsonp_callback(set.to_json, params[:callback])
 end

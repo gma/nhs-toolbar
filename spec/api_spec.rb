@@ -11,8 +11,8 @@ describe "API" do
     get "/api/search", query.empty? ? {} : { :q => query }
   end
   
-  def get_data_set(name)
-    get "/api/data-set/#{name}"
+  def get_data_set(name, params = {})
+    get "/api/data-set/#{name}", params
   end
   
   describe "/api/search" do
@@ -60,6 +60,11 @@ describe "API" do
         data_returned["labels"].should include("1998-99")
         data_returned["series"].first.should have_key("data")
       end
+    end
+    
+    it "should wrap the data in a JSONP callback" do
+      get_data_set("asthma", :callback => "func")
+      last_response.body.should match(/^func\(/)
     end
   end
 end
