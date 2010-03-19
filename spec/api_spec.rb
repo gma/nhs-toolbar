@@ -27,7 +27,7 @@ describe "API" do
     end
   
     it "should return list of data sets that match a keyword" do
-      get_search("asthma")
+      get_search("asthma,heart disease")
       data_returned.first["name"].should == "asthma"
     end
   end

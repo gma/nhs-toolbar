@@ -49,7 +49,8 @@ end
 get "/api/search" do
   content_type "application/json"
   data_sets = []
-  if params[:q] == "asthma"
+  keywords = params[:q].nil? ? [] : params[:q].split(",")
+  if keywords.include?("asthma")
     DATA_SETS.each do |name, data|
       if name =~ /asthma/
         data_sets << { "name" => name }
