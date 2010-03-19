@@ -74,15 +74,15 @@ helpers do
   end
 end
 
-not_found do
-  set_common_variables
-  haml(:not_found)
-end
-
-error do
-  set_common_variables
-  haml(:error)
-end unless Sinatra::Application.environment == :development
+# not_found do
+#   set_common_variables
+#   haml(:not_found)
+# end
+# 
+# error do
+#   set_common_variables
+#   haml(:error)
+# end unless Sinatra::Application.environment == :development
 
 # If you want to change Nesta's behaviour, you have two options:
 #

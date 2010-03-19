@@ -1,29 +1,65 @@
 require File.join(File.dirname(__FILE__), "spec_helper")
 
-describe "api" do
+describe "API" do
   include RequestSpecHelper
 
-  def data_sets
+  def data_returned
     JSON.parse(last_response.body)
   end
   
   def get_search(query = "")
-    path = "/api/search"
-    get path, query.empty? ? {} : { :q => query }
+    get "/api/search", query.empty? ? {} : { :q => query }
   end
   
-  it "should return JSON" do
-    get_search
-    last_response.headers["Content-Type"].should == "application/json"
+  def get_data_set(name)
+    get "/api/data-set/#{name}"
   end
   
-  it "should return an empty list of data sets if keyword not specified" do
-    get_search
-    data_sets.should == []
-  end
+  describe "/api/search" do
+    it "should return JSON" do
+      get_search
+      last_response.headers["Content-Type"].should == "application/json"
+    end
   
-  it "should return list of data sets that match a keyword" do
-    get_search("asthma")
-    data_sets.first["data-set"].should == "asthma"
+    it "should return an empty list of data sets if keyword not specified" do
+      get_search
+      data_returned.should == []
+    end
+  
+    it "should return list of data sets that match a keyword" do
+      get_search("asthma")
+      data_returned.first["name"].should == "asthma"
+    end
+  end
+
+  describe "/api/data-set/:name" do
+    it "should return JSON" do
+      get_data_set("asthma")
+      last_response.headers["Content-Type"].should == "application/json"
+    end
+
+    it "should respond with 404 if data set not found" do
+      get_data_set("not-likely")
+      last_response.should be_not_found
+    end
+
+    describe "/api/data-set for existing data" do
+      before(:each) do
+        get_data_set("asthma")
+      end
+    
+      it "should return a description of the data" do
+        data_returned["summary"].should match(/about/)
+      end
+      
+      it "should return the data type" do
+        data_returned["type"].should == "series"
+      end
+      
+      it "should return the data" do
+        data_returned["labels"].should include("1998-99")
+        data_returned["series"].first.should have_key("data")
+      end
+    end
   end
 end
