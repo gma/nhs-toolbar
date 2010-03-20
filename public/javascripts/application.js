@@ -1,3 +1,5 @@
+(function(){
+
 var settings = {
   apiUrl: 'http://localhost:9393/api'
 };
@@ -139,3 +141,5 @@ $(document).ready(function() {
   app.setupAjaxCallbacks();
   app.searchForDataSets(app.getKeywords());
 });
+
+}());
