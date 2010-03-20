@@ -37,7 +37,7 @@ namespace :vlad do
       Rake::Task["vlad:#{task}"].invoke
     end
     run "sudo chown app:deploy #{current_path}/config.ru"
-    run "sudo chown -R #{current_path}/config/content"
+    # run "sudo chown -R #{current_path}/content"
   end
   
   remote_task :start_app do
