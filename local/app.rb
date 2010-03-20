@@ -2,6 +2,50 @@ require "json"
 require File.join(File.dirname(__FILE__), *%w[.. lib shellescape])
 
 DATA_SETS = {
+  "epilepsy_deaths" => {
+    "keywords" => "epilepsy",
+    "source" => "http://www.statistics.gov.uk/cci/article.asp?id=1543",
+    "summary" => "Death rates for epilepsy (underlying cause) per 100,000 population.",
+    "type" => "series",
+    "labels" => [
+        "1993",
+        "1994",
+        "1995",
+        "1996",
+        "1997",
+        "1998",
+        "1999",
+        "2000"
+      ],
+      "series" => [
+        {
+          "name" => "Women",
+          "data" => [
+            1.09,
+            1.10,
+            1.14,
+            1.08,
+            1.14,
+            1.10,
+            1.24,
+            1.06
+          ]
+        },
+        {
+          "name" => "Men",
+          "data" => [
+            1.73,
+            1.73,
+            1.75,
+            2.01,
+            1.90,
+            1.94,
+            1.89,
+            2.01
+          ]
+        }
+      ]
+    },
   "asthma_totals" => {
     "keywords" => "asthma, diagnosis",
     "summary" => "Total count of diagnosed primary asthma cases by gender.",
