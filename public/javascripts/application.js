@@ -1,7 +1,7 @@
 var nhsInject = (function(){
 
 var settings = {
-  apiUrl: 'http://localhost:9393/api'
+  apiUrl: 'http://grahamashton.name/api'
 };
 
 var app = {
