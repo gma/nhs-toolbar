@@ -18,17 +18,22 @@ var app = {
   },
   
   searchForDataSets: function(keywordList) {
-    // var url = settings.apiUrl + '/search?url=' + document.location + '&callback=?';
+    // var url = settings.apiUrl + '/search?url=' + document.location.href + '&callback=?';
     var url = settings.apiUrl + '/search?url=http://www.asthma.org.uk' + '&callback=?';
     $.getJSON(url, function(dataSets) {
-      if (dataSets.length) {
+      if (dataSets.length) {        
+        var container = $('#nhs-inject');
+        if (!container.length){
+            container = $('body');
+        }
+      
         $('<div/>', { id: 'nhs-injection-button' })
           .append('<a/>').find('a')
             .text('Show related data')
             .click(function() { app.chooseDataSet(dataSets); })
           .end()
           .fadeIn()
-          .appendTo('body');
+          .appendTo(container);
       }
     });
   },
