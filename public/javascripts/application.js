@@ -84,7 +84,8 @@ var app = {
   
   createChooser: function(dataSets, overlay) {
     var chooser = $('<div/>', { id: 'chooser' }).appendTo(overlay);
-    $('<p><span class="nhs">NHS</span> data that is relevant to this page...</p>', { margin: '0' }).appendTo(chooser);
+    var heading = 'Available data that is relevant to this page...';
+    $('<p/>', { margin: '0' }).text(heading).appendTo(chooser);
     var list = $('<ul/>').appendTo(chooser);
     $.each(dataSets, function(i, dataSet) {
       $('<li/>').text(dataSet['summary'])
