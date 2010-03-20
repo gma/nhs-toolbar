@@ -27,8 +27,8 @@ describe "API" do
     end
   
     it "should return list of data sets that match a keyword" do
-      get_search(:q => "asthma,heart disease")
-      data_returned.first["name"].should == "asthma"
+      get_search(:q => "asthma_totals,heart disease")
+      data_returned.first["name"].should == "asthma_totals"
     end
     
     it "should retrieve keywords from a web page" do
@@ -40,7 +40,7 @@ describe "API" do
   
   describe "/api/data-set/:name" do
     it "should return JSON" do
-      get_data_set("asthma")
+      get_data_set("asthma_totals")
       last_response.headers["Content-Type"].should == "application/json"
     end
 
@@ -51,11 +51,11 @@ describe "API" do
 
     describe "/api/data-set for existing data" do
       before(:each) do
-        get_data_set("asthma")
+        get_data_set("asthma_totals")
       end
     
       it "should return a description of the data" do
-        data_returned["summary"].should match(/about/)
+        data_returned["summary"].should match(/Total count of diagnosed primary asthma cases by gender./)
       end
       
       it "should return the data type" do
@@ -69,7 +69,7 @@ describe "API" do
     end
     
     it "should wrap the data in a JSONP callback" do
-      get_data_set("asthma", :callback => "func")
+      get_data_set("asthma_totals", :callback => "func")
       last_response.body.should match(/^func\(/)
     end
   end

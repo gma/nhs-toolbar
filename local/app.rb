@@ -1,8 +1,9 @@
 require "json"
+require File.join(File.dirname(__FILE__), *%w[.. lib shellescape])
 
 DATA_SETS = {
-  "asthma" => {
-    "summary" => "Some data about asthma diagnosis, or somat...",
+  "asthma_totals" => {
+    "summary" => "Total count of diagnosed primary asthma cases by gender.",
     "type" => "series",
     "labels" => [
       "1998-99",
@@ -31,12 +32,43 @@ DATA_SETS = {
           50879,
           47399
         ]
+      },
+      {
+        "name" => "Men",
+        "data" => [
+          36825,
+          35149,
+          32411,
+          32726,
+          32508,
+          33740,
+          38358,
+          35181,
+          37890,
+          34399
+        ]
       }
     ]
   }
 }
 
 helpers do
+  def keywords_from_query_string
+    params[:q].nil? ? [] : params[:q].split(",")
+  end
+  
+  def keywords_from_url
+    keywords = []
+    options = %w[
+      title headings paragraphs remove-subphrases remove-stopwords
+    ].map { |opt| "--#{opt}" }.join(" ")
+    command = "kwexplorer #{options} --max-words 2 --url #{params[:url].shellescape}"
+    `#{command}`.each_line do |line|
+      keywords << line.split[0...-1].join(" ")
+    end
+    keywords
+  end
+  
   def jsonp_callback(json, callback)
     callback.nil? ? json : "#{callback}(#{json})"
   end
@@ -49,7 +81,9 @@ end
 get "/api/search" do
   content_type "application/json"
   data_sets = []
-  keywords = params[:q].nil? ? [] : params[:q].split(",")
+  keywords = []
+  params[:q] && keywords += keywords_from_query_string
+  params[:url] && keywords += keywords_from_url
   data_sets = keywords.map do |keyword|
     DATA_SETS[keyword] && { "name" => keyword }
   end.compact
