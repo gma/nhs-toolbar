@@ -1,4 +1,4 @@
-(function(){
+var nhsInject = (function(){
 
 var settings = {
   apiUrl: 'http://localhost:9393/api'
@@ -142,4 +142,5 @@ $(document).ready(function() {
   app.searchForDataSets(app.getKeywords());
 });
 
+return app; // This is passed to the global var 'nhsInject'
 }());
