@@ -2,8 +2,9 @@ require "json"
 require File.join(File.dirname(__FILE__), *%w[.. lib shellescape])
 
 DATA_SETS = {
-  "asthma" => {
-    "summary" => "Total count of diagnosed primary asthma cases by gender",
+  "asthma_totals" => {
+    "keywords" => "asthma, diagnosis",
+    "summary" => "Total count of diagnosed primary asthma cases by gender.",
     "type" => "series",
     "labels" => [
       "1998-99",
@@ -51,6 +52,7 @@ DATA_SETS = {
     ]
   },
   "latest_asthma" => {
+    "keywords" => "asthma, diagnosis",
     "summary" => "Diagnosed primary asthma cases in 2007",
     "type" => "series",
     "labels" => [
@@ -132,9 +134,16 @@ get "/api/search" do
   keywords = []
   params[:q] && keywords += keywords_from_query_string
   params[:url] && keywords += keywords_from_url
-  data_sets = keywords.map do |keyword|
-    DATA_SETS[keyword] && { "name" => keyword }
-  end.compact
+  data_sets = []
+  keywords.each do |keyword|
+    DATA_SETS.each do |name,data|  
+      data["keywords"].split(",").each do |tag|
+        if keyword == tag.strip
+          data_sets << { "name" => name}
+        end
+      end
+    end
+  end
   jsonp_callback(data_sets.to_json, params[:callback])
 end
 
