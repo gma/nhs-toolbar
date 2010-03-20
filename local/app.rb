@@ -1,7 +1,7 @@
 require "json"
 
 DATA_SETS = {
-  "asthma" => {
+  "asthma_totals" => {
     "summary" => "Total count of diagnosed primary asthma cases by gender.",
     "type" => "series",
     "labels" => [
