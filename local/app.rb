@@ -50,13 +50,9 @@ get "/api/search" do
   content_type "application/json"
   data_sets = []
   keywords = params[:q].nil? ? [] : params[:q].split(",")
-  if keywords.include?("asthma")
-    DATA_SETS.each do |name, data|
-      if name =~ /asthma/
-        data_sets << { "name" => name }
-      end
-    end
-  end
+  data_sets = keywords.map do |keyword|
+    DATA_SETS[keyword] && { "name" => keyword }
+  end.compact
   jsonp_callback(data_sets.to_json, params[:callback])
 end
 

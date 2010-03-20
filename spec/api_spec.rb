@@ -7,8 +7,8 @@ describe "API" do
     JSON.parse(last_response.body)
   end
   
-  def get_search(query = "")
-    get "/api/search", query.empty? ? {} : { :q => query }
+  def get_search(params = {})
+    get "/api/search", params
   end
   
   def get_data_set(name, params = {})
@@ -27,8 +27,14 @@ describe "API" do
     end
   
     it "should return list of data sets that match a keyword" do
-      get_search("asthma,heart disease")
+      get_search(:q => "asthma,heart disease")
       data_returned.first["name"].should == "asthma"
+    end
+    
+    it "should retrieve keywords from a web page" do
+      pending
+      # Need to setup some mocks. Being a bit hacky and just coding it up
+      # right now...
     end
   end
   
