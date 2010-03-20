@@ -2,7 +2,7 @@ require "json"
 require File.join(File.dirname(__FILE__), *%w[.. lib shellescape])
 
 DATA_SETS = {
-  "asthma_totals" => {
+  "asthma" => {
     "summary" => "Total count of diagnosed primary asthma cases by gender.",
     "type" => "series",
     "labels" => [
