@@ -37,7 +37,6 @@ namespace :vlad do
       Rake::Task["vlad:#{task}"].invoke
     end
     run "sudo chown app:deploy #{current_path}/config.ru"
-    run "sudo chown -R #{current_path}/config/config.yml"
     run "sudo chown -R #{current_path}/config/content"
   end
   
