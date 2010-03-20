@@ -21,7 +21,7 @@ describe "API" do
       last_response.headers["Content-Type"].should == "application/json"
     end
   
-    it "should return an empty list of data sets if keyword not specified" do
+    it "should return an empty list of data sets if no input provided" do
       get_search
       data_returned.should == []
     end
@@ -31,7 +31,7 @@ describe "API" do
       data_returned.first["name"].should == "asthma"
     end
   end
-
+  
   describe "/api/data-set/:name" do
     it "should return JSON" do
       get_data_set("asthma")
