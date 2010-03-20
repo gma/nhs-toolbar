@@ -12,8 +12,8 @@ var app = {
     $('#ajax-status').ajaxStop(function() {
       $(this).fadeOut();
     });
-    $('body').ajaxError(function (event, request, ajaxOptions, exception) {
-      console.log("XHR Response: " + JSON.stringify(request));
+    $('#ajax-status').ajaxError(function (event, request, ajaxOptions, exception) {
+      $(this).fadeOut();
     });
   },
   
@@ -44,7 +44,6 @@ var app = {
   },
   
   showDataSet: function(dataSet) {
-    console.log(dataSet["name"]);
     var url = settings.apiUrl + '/data-set/' + dataSet['name'] + '?callback=?';
     $.getJSON(url, function(data) {
       if (data["type"] == "series") {
@@ -99,6 +98,7 @@ var app = {
 };
 
 $(document).ready(function() {
+  $('body').append('<div/>', { id: 'ajax-status' });
   app.setupAjaxCallbacks();
   app.searchForDataSets();
 });
