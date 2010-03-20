@@ -34,10 +34,15 @@ var app = {
   },
   
   chooseDataSet: function(dataSets) {
-    $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
+    if (! $('#nhs-injection-presenter').length) {
+      $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
+    }
     var presenter = $('#nhs-injection-presenter');
     presenter
-      .css({ left: $(window).width() / 2 - presenter.width() / 2 })
+      .css({
+        left: $(window).width() / 2 - presenter.width() / 2,
+        top: '6em'
+      })
       .fadeIn();
     // When we get more data sets, let's show a chooser...
     app.showDataSet(dataSets[0]);
@@ -49,6 +54,7 @@ var app = {
       if (data["type"] == "series") {
         app.plotBarChart(data);
       }
+      $('#nhs-injection-button').fadeOut();
     });
   },
   
@@ -56,34 +62,51 @@ var app = {
     var chart = new Highcharts.Chart({
       chart: {
          renderTo: 'nhs-injection-presenter',
-         defaultSeriesType: 'column'
+         defaultSeriesType: 'column',
+         margin: [50, 50, 100, 50]
       },
       title: {
-         text: data['summary']
+         text: data['summary'],
+         style: {
+           color: '#eee'
+         }
       },
       xAxis: {
-         categories: data['labels']
+        labels: {
+          rotation: -45,
+          align: 'right',
+          style: {
+            font: 'normal 13px Verdana, sans-serif',
+            color: '#eee'
+          }
+        },
+        categories: data['labels']
       },
       yAxis: {
-         min: 0,
-         title: {
-            text: 'Count'
-         }
+        labels: {
+          style: {
+            color: '#eee'
+          }
+        },
+        min: 0,
+        title: {
+           text: ''
+        }
       },
       legend: {
-         layout: 'vertical',
-         backgroundColor: '#FFFFFF',
-         style: {
-            left: '100px',
-            top: '70px',
-            bottom: 'auto'
-         }
+        layout: 'vertical',
+        backgroundColor: '#FFFFFF',
+        style: {
+           left: '100px',
+           top: '70px',
+           bottom: 'auto'
+        }
       },
       tooltip: {
-         formatter: function() {
-            return '<b>'+ this.series.name +'</b><br/>'+
-               this.x +': '+ this.y +' mm';
-         }
+        formatter: function() {
+           return '<b>'+ this.series.name +'</b><br/>'+
+              this.x +': '+ this.y;
+        }
       },
       plotOptions: {
          column: {
