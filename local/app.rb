@@ -277,7 +277,7 @@ get "/api/search" do
       end
     end
   end
-  jsonp_callback(data_sets.to_json, params[:callback])
+  jsonp_callback(data_sets.uniq.to_json, params[:callback])
 end
 
 get "/api/data-set/:name" do
