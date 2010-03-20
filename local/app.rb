@@ -5,7 +5,7 @@ DATA_SETS = {
   "prostate_deaths" => {
     "keywords" => "prostate, cancer",
     "source" => "http://info.cancerresearchuk.org/cancerstats/types/prostate/mortality",
-    "summary" => "Death rates for prostate cancer, UK.",
+    "summary" => "Death rates for prostate cancer (UK)",
     "type" => "series",
     "labels" => [
           "1971",

@@ -52,3 +52,27 @@ div#nhs-injection-presenter
   :background #222
   :opacity 0.95
   :color #eee
+  
+  div#chooser 
+    :position relative
+    :padding 1em
+
+    ul
+      :padding 0 5px
+      
+      :background white
+      
+      :list-style none
+      +border-radius(5px)
+
+      li
+        :padding 2em 5px
+        :border-bottom 2px solid #ccc
+        
+        :background white
+        :color black
+        :cursor pointer
+        
+        &:last-child
+          :border-bottom none
+

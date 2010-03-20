@@ -19,6 +19,7 @@ var app = {
   
   searchForDataSets: function(keywordList) {
     // var url = settings.apiUrl + '/search?url=' + document.location.href + '&callback=?';
+    // var url = settings.apiUrl + '/search?url=http://en.wikipedia.org/wiki/Epilepsy' + '&callback=?';
     var url = settings.apiUrl + '/search?url=http://www.asthma.org.uk' + '&callback=?';
     $.getJSON(url, function(dataSets) {
       if (dataSets.length) {        
@@ -38,7 +39,7 @@ var app = {
     });
   },
   
-  chooseDataSet: function(dataSets) {
+  createOverlay: function() {
     if (! $('#nhs-injection-presenter').length) {
       $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
     }
@@ -47,10 +48,35 @@ var app = {
       .css({
         left: $(window).width() / 2 - presenter.width() / 2,
         top: '6em'
-      })
-      .fadeIn();
-    // When we get more data sets, let's show a chooser...
-    app.showDataSet(dataSets[0]);
+      });
+    return presenter.first();
+  },
+  
+  createChooser: function(dataSets, overlay) {
+    var chooser = $('<div/>', { id: 'chooser' }).appendTo(overlay);
+    var heading = 'Available data that is relevant to this page...';
+    $('<p/>', { margin: '0' }).text(heading).appendTo(chooser);
+    var list = $('<ul/>').appendTo(chooser);
+    $.each(dataSets, function(i, dataSet) {
+      $('<li/>').text(dataSet['summary'])
+        .click(function() {
+          $('#chooser').remove();
+          app.showDataSet(dataSet);
+        })
+        .appendTo(list);
+    });
+  },  
+  
+  chooseDataSet: function(dataSets) {
+    var overlay = app.createOverlay();
+    overlay.fadeIn('fast', function() {
+      if (dataSets.length > 1) {
+        app.createChooser(dataSets, overlay);
+      }
+      else {
+        app.showDataSet(dataSets[0]);
+      }
+    });
   },
   
   showDataSet: function(dataSet) {
@@ -59,7 +85,6 @@ var app = {
       if (data["type"] == "series") {
         app.plotBarChart(data);
       }
-      $('#nhs-injection-button').fadeOut();
     });
   },
   
