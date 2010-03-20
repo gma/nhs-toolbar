@@ -24,7 +24,7 @@ var app = {
     $.getJSON(url, function(dataSets) {
       if (dataSets.length) {        
         var container = $('#nhs-inject');
-        if (!container.length){
+        if (! container.length){
             container = $('body');
         }
       
@@ -70,7 +70,7 @@ var app = {
   
   createOverlay: function() {
     if (! $('#nhs-injection-presenter').length) {
-      $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
+      $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('#nhs-inject');
     }
     var presenter = $('#nhs-injection-presenter').first();
     presenter
@@ -125,7 +125,7 @@ var app = {
       chart: {
          renderTo: 'nhs-injection-graph-container',
          defaultSeriesType: 'column',
-         margin: [50, 50, 100, 50]
+         margin: [50, 50, 75, 50]
       },
       title: {
          text: data['summary'],
@@ -183,7 +183,7 @@ var app = {
 };
 
 $(document).ready(function() {
-  $('body').append('<div/>', { id: 'ajax-status' });
+  $('#nhs-inject').append('<div/>', { id: 'ajax-status' });
   app.setupAjaxCallbacks();
   app.searchForDataSets();
 });
