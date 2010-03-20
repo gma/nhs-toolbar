@@ -39,17 +39,39 @@ var app = {
     });
   },
   
+  createCloseButton: function(container) {
+    $("<a/>")
+      .attr("href", "")
+      .css({
+        position: "absolute",
+        top: "-18px",
+        left: "-18px",
+        width: "40px",
+        height: "42px",
+        background: "url(http://www.quizthemarket.com/images/close-survey.png) no-repeat",
+        outline: "0"
+      })
+      .click(function() {
+        container.fadeOut(function() {
+          container.remove();
+        });
+        return false;
+      })
+      .appendTo(container);
+  },  
+  
   createOverlay: function() {
     if (! $('#nhs-injection-presenter').length) {
       $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('body');
     }
-    var presenter = $('#nhs-injection-presenter');
+    var presenter = $('#nhs-injection-presenter').first();
     presenter
       .css({
         left: $(window).width() / 2 - presenter.width() / 2,
         top: '6em'
       });
-    return presenter.first();
+    app.createCloseButton(presenter);
+    return presenter;
   },
   
   createChooser: function(dataSets, overlay) {
@@ -80,6 +102,8 @@ var app = {
   },
   
   showDataSet: function(dataSet) {
+    $('#nhs-injection-presenter')
+      .append($('<div/>', { id: 'nhs-injection-graph-container' }));
     var url = settings.apiUrl + '/data-set/' + dataSet['name'] + '?callback=?';
     $.getJSON(url, function(data) {
       if (data["type"] == "series") {
@@ -91,7 +115,7 @@ var app = {
   plotBarChart: function(data) {
     var chart = new Highcharts.Chart({
       chart: {
-         renderTo: 'nhs-injection-presenter',
+         renderTo: 'nhs-injection-graph-container',
          defaultSeriesType: 'column',
          margin: [50, 50, 100, 50]
       },
