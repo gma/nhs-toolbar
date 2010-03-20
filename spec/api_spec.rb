@@ -29,6 +29,7 @@ describe "API" do
     it "should return list of data sets that match a keyword" do
       get_search(:q => "asthma, heart disease")
       data_returned.first["name"].should == "asthma_totals"
+      data_returned.first["summary"].should match(/Total count of diagnosed/)
     end
     
     it "should retrieve keywords from a web page" do
@@ -55,11 +56,11 @@ describe "API" do
       end
     
       it "should return a description of the data" do
-        data_returned["summary"].should match(/Total count of diagnosed primary asthma cases by gender./)
+        data_returned["summary"].should match(/Total count of diagnosed/)
       end
       
       it "should return the keywords" do
-        data_returned["keywords"].should match(/asthma, diagnosis/)
+        data_returned["keywords"].should match(/asthma, respiratory disease/)
       end
       
       it "should return the data type" do

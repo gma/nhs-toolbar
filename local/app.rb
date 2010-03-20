@@ -136,8 +136,8 @@ DATA_SETS = {
       ]
     },
   "asthma_totals" => {
-    "keywords" => "asthma, diagnosis",
-    "summary" => "Total count of diagnosed primary asthma cases by gender.",
+    "keywords" => "asthma, respiratory disease",
+    "summary" => "Total count of diagnosed primary asthma cases by gender",
     "type" => "series",
     "labels" => [
       "1998-99",
@@ -185,7 +185,7 @@ DATA_SETS = {
     ]
   },
   "latest_asthma" => {
-    "keywords" => "asthma, diagnosis",
+    "keywords" => "asthma, respiratory disease",
     "summary" => "Diagnosed primary asthma cases in 2007",
     "type" => "series",
     "labels" => [
@@ -269,10 +269,10 @@ get "/api/search" do
   params[:url] && keywords += keywords_from_url
   data_sets = []
   keywords.each do |keyword|
-    DATA_SETS.each do |name,data|  
+    DATA_SETS.each do |name, data|  
       data["keywords"].split(",").each do |tag|
         if keyword == tag.strip
-          data_sets << { "name" => name}
+          data_sets << { "name" => name, "summary" => data["summary"] }
         end
       end
     end
