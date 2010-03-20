@@ -18,9 +18,9 @@ var app = {
   },
   
   searchForDataSets: function(keywordList) {
-    // var url = settings.apiUrl + '/search?url=' + document.location.href + '&callback=?';
     // var url = settings.apiUrl + '/search?url=http://en.wikipedia.org/wiki/Epilepsy' + '&callback=?';
-    var url = settings.apiUrl + '/search?url=http://www.asthma.org.uk' + '&callback=?';
+    // var url = settings.apiUrl + '/search?url=http://www.asthma.org.uk' + '&callback=?';
+    var url = settings.apiUrl + '/search?url=' + window.location.href + '&callback=?';
     $.getJSON(url, function(dataSets) {
       if (dataSets.length) {        
         var container = $('#nhs-inject');
@@ -40,6 +40,19 @@ var app = {
   },
   
   createCloseButton: function(container) {
+    var close = function() {
+      container.fadeOut(function() {
+        container.remove();
+      });
+      return false;
+    };
+    
+    $(document).keydown(function(ev) {
+      if (ev.which === 27) { // ESC key
+        close();
+      }
+    });
+    
     $("<a/>")
       .attr("href", "")
       .css({
@@ -51,14 +64,9 @@ var app = {
         background: "url(http://www.quizthemarket.com/images/close-survey.png) no-repeat",
         outline: "0"
       })
-      .click(function() {
-        container.fadeOut(function() {
-          container.remove();
-        });
-        return false;
-      })
+      .click(close)
       .appendTo(container);
-  },  
+  },
   
   createOverlay: function() {
     if (! $('#nhs-injection-presenter').length) {
