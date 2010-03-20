@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), *%w[.. lib shellescape])
 
 DATA_SETS = {
   "asthma" => {
-    "summary" => "Total count of diagnosed primary asthma cases by gender.",
+    "summary" => "Total count of diagnosed primary asthma cases by gender",
     "type" => "series",
     "labels" => [
       "1998-99",
