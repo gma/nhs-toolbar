@@ -29,8 +29,7 @@ var app = {
         }
       
         $('<div/>', { id: 'nhs-injection-button' })
-          .append('<a/>').find('a')
-            .text('Show related data')
+          .append('<a>Related <span class="nhs">NHS</span> data</a>').find('a')
             .click(function() { app.chooseDataSet(dataSets); })
           .end()
           .fadeIn()
