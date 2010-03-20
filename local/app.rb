@@ -2,7 +2,7 @@ require "json"
 
 DATA_SETS = {
   "asthma" => {
-    "summary" => "Some data about asthma diagnosis, or somat...",
+    "summary" => "Total count of diagnosed primary asthma cases by gender.",
     "type" => "series",
     "labels" => [
       "1998-99",
@@ -30,6 +30,21 @@ DATA_SETS = {
           48601,
           50879,
           47399
+        ]
+      },
+      {
+        "name" => "Men",
+        "data" => [
+          36825,
+          35149,
+          32411,
+          32726,
+          32508,
+          33740,
+          38358,
+          35181,
+          37890,
+          34399
         ]
       }
     ]

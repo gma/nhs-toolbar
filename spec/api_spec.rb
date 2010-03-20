@@ -55,7 +55,7 @@ describe "API" do
       end
     
       it "should return a description of the data" do
-        data_returned["summary"].should match(/about/)
+        data_returned["summary"].should match(/Total count of diagnosed primary asthma cases by gender./)
       end
       
       it "should return the data type" do
