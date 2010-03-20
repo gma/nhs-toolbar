@@ -70,15 +70,15 @@ var app = {
   createOverlay: function() {
     if (! $('#nhs-injection-presenter').length) {
       $('<div/>', { id: 'nhs-injection-presenter' }).appendTo('#nhs-inject');
+      var presenter = $('#nhs-injection-presenter').first();
+      presenter
+        .css({
+          left: $(window).width() / 2 - presenter.width() / 2,
+          top: '6em'
+        });
+      app.createCloseButton(presenter);
+      return presenter;
     }
-    var presenter = $('#nhs-injection-presenter').first();
-    presenter
-      .css({
-        left: $(window).width() / 2 - presenter.width() / 2,
-        top: '6em'
-      });
-    app.createCloseButton(presenter);
-    return presenter;
   },
   
   createChooser: function(dataSets, overlay) {
