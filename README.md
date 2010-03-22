@@ -1,14 +1,15 @@
-# NHS Injection API
+# NHS Toolar
 
-The NHS Injection API is part of the broader NHS Injection project, for the
+The NHS Toolbar was written for the
 DotGovLabs hack day organise by [Rewired State](http://rewiredstate.org/
 "Rewired State").
 
 ## Notes for developers
 
-To run the server you'll need to install Sinatra. The easiest way to get setup
-is via Bundler:
+To run the API server you'll need to install Sinatra. The easiest way to get
+setup is via Bundler:
 
+    $ cd api
     $ gem install bundler
     $ bundle install
 
@@ -18,6 +19,6 @@ Now you can run a local server on your computer:
 
 Test the client side code at this URL: http://localhost:9393/api-test
 
-The code for the API is in `local/app.rb`. To run the API tests type:
+The code for the API is in `app.rb`. To run the tests type:
 
-    $ bundle exec spec spec/api_spec.rb
+    $ bundle exec rake spec

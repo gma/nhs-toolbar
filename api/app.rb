@@ -1,161 +1,124 @@
 require "rubygems"
 require "sinatra"
-require "builder"
 require "haml"
 require "sass"
+require "json"
 
-require "lib/cache"
-require "lib/configuration"
-require "lib/models"
+require File.join(File.dirname(__FILE__), *%w[lib shellescape])
 
-set :cache_enabled, Nesta::Configuration.cache
+DATA_SETS = {
+  "prostate_deaths" => {
+    "keywords" => "prostate, cancer",
+    "source" => "http://info.cancerresearchuk.org/cancerstats/types/prostate/mortality",
+    "summary" => "Death rates for prostate cancer (UK)",
+    "type" => "series",
+    "labels" => %w[1971 1972 1973 1974 1975 1976 1977 1978 1979 1980 1981 1982 1983 1984 1985 1986 1987 1988 1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007],
+    "series" => [
+      {
+        "name" => "Women",
+        "data" => %w[19.9 20.1 20.4 20.6 20.2 20.6 20.5 20.4 20.9 21.2 21.3 21.5 22.2 24.8 25.6 25.9 26.5 27.3 28.3 28.7 29.8 30.1 29.6 29.5 29.6 28.9 27.7 27.4 27.2 26.1 27.3 27.0 27.2 26.7 25.5 24.9 24.6]
+      }
+    ]
+  },
+  "epilepsy_deaths" => {
+    "keywords" => "epilepsy",
+    "source" => "http://www.statistics.gov.uk/cci/article.asp?id=1543",
+    "summary" => "Death rates for epilepsy (underlying cause) per 100,000 population.",
+    "type" => "series",
+    "labels" => %w[1993 1994 1995 1996 1997 1998 1999 2000],
+    "series" => [
+      {
+        "name" => "Women",
+        "data" => %w[1.09 1.10 1.14 1.08 1.14 1.10 1.24 1.06]
+      },
+      {
+        "name" => "Men",
+        "data" => %w[1.73 1.73 1.75 2.01 1.90 1.94 1.89 2.01]
+      }
+    ]
+  },
+  "asthma_totals" => {
+    "keywords" => "asthma, respiratory disease",
+    "summary" => "Total count of diagnosed primary asthma cases by gender",
+    "type" => "series",
+    "labels" => %w[1998-99 1999-00 2000-01 2001-02 2002-03 2003-04 2004-05 2005-06 2006-07 2007-08],
+    "series" => [
+      {
+        "name" => "Women",
+        "data" => %w[43643 41775 38789 39125 39267 46302 50265 48601 50879 47399]
+      },
+      {
+        "name" => "Men",
+        "data" => %w[36825 35149 32411 32726 32508 33740 38358 35181 37890 34399]
+      }
+    ]
+  },
+  "latest_asthma" => {
+    "keywords" => "asthma, respiratory disease",
+    "summary" => "Diagnosed primary asthma cases in 2007",
+    "type" => "series",
+    "labels" => %w[0-4 5-14 15-24 25-34 35-44 45-54 55-64 65-74 75-84 85-120],
+    "series" => [
+      {
+        "name" => "Women",
+        "data" => %w[4445 4820 5118 5690 7108 6282 4644 3677 3724 1856]
+      },
+      {
+        "name" => "Men",
+        "data" => %w[8387 7598 2665 2670 3646 3106 2288 2110 1429 487]
+      }
+    ]
+  }
+}
 
 helpers do
-  def set_from_config(*variables)
-    variables.each do |var|
-      instance_variable_set("@#{var}", Nesta::Configuration.send(var))
+  def keywords_from_query_string
+    params[:q].nil? ? [] : params[:q].split(",")
+  end
+  
+  def keywords_from_url
+    keywords = []
+    options = %w[
+      title headings paragraphs remove-subphrases remove-stopwords
+    ].map { |opt| "--#{opt}" }.join(" ")
+    command = "kwexplorer #{options} --max-words 2 --url #{params[:url].shellescape}"
+    `#{command}`.each_line do |line|
+      keywords << line.split[0...-1].join(" ")
+    end
+    keywords
+  end
+  
+  def jsonp_callback(json, callback)
+    callback.nil? ? json : "#{callback}(#{json})"
+  end
+end
+
+get "/api-test" do
+  haml(:api_test, :layout => :playground)
+end
+
+get "/api/search" do
+  content_type "application/json"
+  data_sets = []
+  keywords = []
+  params[:q] && keywords += keywords_from_query_string
+  params[:url] && keywords += keywords_from_url
+  data_sets = []
+  keywords.each do |keyword|
+    DATA_SETS.each do |name, data|  
+      data["keywords"].split(",").each do |tag|
+        if keyword == tag.strip
+          data_sets << { "name" => name, "summary" => data["summary"] }
+        end
+      end
     end
   end
-  
-  def set_from_page(*variables)
-    variables.each { |var| instance_variable_set("@#{var}", @page.send(var)) }
-  end
-  
-  def set_title(page)
-    if page.respond_to?(:parent) && page.parent
-      @title = "#{page.heading} - #{page.parent.heading}"
-    else
-      @title = "#{page.heading} - #{Nesta::Configuration.title}"
-    end
-  end
-  
-  def no_widow(text)
-    text.split[0...-1].join(" ") + "&nbsp;#{text.split[-1]}"
-  end
-  
-  def set_common_variables
-    @menu_items = Page.menu_items
-    @site_title = Nesta::Configuration.title
-    set_from_config(:google_analytics_code)
-  end
-
-  def url_for(page)
-    File.join(base_url, page.path)
-  end
-  
-  def base_url
-    url = "http://#{request.host}"
-    request.port == 80 ? url : url + ":#{request.port}"
-  end  
-  
-  def nesta_atom_id_for_page(page)
-    published = page.date.strftime('%Y-%m-%d')
-    "tag:#{request.host},#{published}:#{page.abspath}"
-  end
-  
-  def atom_id(page = nil)
-    if page
-      page.atom_id || nesta_atom_id_for_page(page)
-    else
-      "tag:#{request.host},2009:/"
-    end
-  end
-  
-  def format_date(date)
-    date.strftime("%d %B %Y")
-  end
-  
-  def haml(template, options = {}, locals = {})
-    super(template, options.merge(render_options(:haml, template)), locals)
-  end
-  
-  def sass(template, options = {}, locals = {})
-    super(template, options.merge(render_options(:sass, template)), locals)
-  end
+  jsonp_callback(data_sets.uniq.to_json, params[:callback])
 end
 
-# not_found do
-#   set_common_variables
-#   haml(:not_found)
-# end
-# 
-# error do
-#   set_common_variables
-#   haml(:error)
-# end unless Sinatra::Application.environment == :development
-
-# If you want to change Nesta's behaviour, you have two options:
-#
-# 1. Edit the code. You can merge in future upstream changes with git.
-# 2. Add code to local/app.rb that overrides the default behaviour,
-#    leaving the default files untouched (no "tricky" merging required).
-#
-# Neither way is necessarily *better* than the other; it's up to you to
-# choose the most appropriate course of action for your site. Merging future
-# changes in will typically be a straightforward task, but you may find
-# the ./local directory to be an easy way to manage more significant
-# changes to Nesta's behaviour that are likely to conflict with future
-# changes to the main code base.
-#
-# Note that you can modify the behaviour of any of the default objects
-# in local/app.rb, or replace any of the default view templates by
-# creating replacements of the same name in local/views.
-begin
-  require File.join(File.dirname(__FILE__), "local", "app")
-rescue LoadError
-end
-
-def render_options(engine, template)
-  local_views = File.join("local", "views")
-  if File.exist?(File.join(local_views, "#{template}.#{engine}"))
-    { :views => local_views }
-  else
-    {}
-  end
-end
-
-get "/css/:sheet.css" do
-  content_type "text/css", :charset => "utf-8"
-  cache sass(params[:sheet].to_sym)
-end
-
-get "/" do
-  set_common_variables
-  set_from_config(:title, :subtitle, :description, :keywords)
-  @heading = @title
-  @title = "#{@title} - #{@subtitle}"
-  @articles = Page.find_articles[0..7]
-  @body_class = "home"
-  cache haml(:index)
-end
-
-get %r{/attachments/([\w/.-]+)} do
-  file = File.join(
-      Nesta::Configuration.attachment_path, params[:captures].first)
-  send_file(file, :disposition => nil)
-end
-
-get "/articles.xml" do
-  content_type :xml, :charset => "utf-8"
-  set_from_config(:title, :subtitle, :author)
-  @articles = Page.find_articles.select { |a| a.date }[0..9]
-  cache builder(:atom)
-end
-
-get "/sitemap.xml" do
-  content_type :xml, :charset => "utf-8"
-  @pages = Page.find_all
-  @last = @pages.map { |page| page.last_modified }.inject do |latest, this|
-    this > latest ? this : latest
-  end
-  cache builder(:sitemap)
-end
-
-get "*" do
-  set_common_variables
-  @page = Page.find_by_path(File.join(params[:splat]))
-  raise Sinatra::NotFound if @page.nil?
-  set_title(@page)
-  set_from_page(:description, :keywords)
-  cache haml(:page)
+get "/api/data-set/:name" do
+  content_type "application/json"
+  set = DATA_SETS[params[:name]]
+  set.nil? && raise(Sinatra::NotFound)
+  jsonp_callback(set.to_json, params[:callback])
 end
