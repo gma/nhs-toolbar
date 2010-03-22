@@ -1,4 +1,4 @@
-# NHS Toolar
+# NHS Toolbar
 
 The NHS Toolbar was written for the
 DotGovLabs hack day organise by [Rewired State](http://rewiredstate.org/
