@@ -1,44 +1,23 @@
-# Nesta - a CMS for Ruby Developers
+# NHS Injection API
 
-A CMS for small web sites and blogs, written in
-[Sinatra](http://www.sinatrarb.com/ "Sinatra").
+The NHS Injection API is part of the broader NHS Injection project, for the
+DotGovLabs hack day organise by [Rewired State](http://rewiredstate.org/
+"Rewired State").
 
-Content can be written in
-[Markdown](http://daringfireball.net/projects/markdown/ "Daring Fireball:
-Markdown") or [Textile](http://textism.com/tools/textile/) and stored in text
-files (though you can also use Haml if you need to add some HTML to your
-pages). There's no database; write your content in your editor. Publish by
-pushing to a git repository.
+## Notes for developers
 
-## Installation
-
-Begin by cloning the git repository:
-
-    $ git clone git://github.com/gma/nesta.git
-
-Nesta's dependencies are managed with bundler, which handles installing the
-necessary gems for you:
+To run the server you'll need to install Sinatra. The easiest way to get setup
+is via Bundler:
 
     $ gem install bundler
-    $ cd nesta
     $ bundle install
 
-You'll need a config file. You can start with the default and tweak it to suit
-later:
-
-    $ cp config/config.yml.sample config/config.yml
-
-Create some sample web pages (optional):
-
-    $ bundle exec rake setup:sample_content
-
-That's it - you can launch a local web server in development mode using
-shotgun...
+Now you can run a local server on your computer:
 
     $ bundle exec shotgun app.rb
 
-...then point your web browser at http://localhost:9393. Start editing the
-files in `nesta/content`, and you're on your way.
+Test the client side code at this URL: http://localhost:9393/api-test
 
-See [http://effectif.com/nesta](http://effectif.com/nesta) for more
-documentation.
+The code for the API is in `local/app.rb`. To run the API tests type:
+
+    $ bundle exec spec spec/api_spec.rb

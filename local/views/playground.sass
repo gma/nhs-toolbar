@@ -1,0 +1,81 @@
+!caption_face = "'Lucida Grande', 'Helvetica Neue', Helvetica, sans-serif"
+!text_face    = "'Helvetica Neue', Corbel, Helvetica, Arial, sans-serif" 
+
+=border-radius(!radius)
+  :-webkit-border-radius = !radius
+  :-moz-border-radius = !radius
+  :border-radius = !radius
+
+=corner-widget
+  :display none
+  :right 0
+  :bottom 0
+  :margin 4px
+  :padding 5px 10px
+  +border-radius(5px)
+
+  :font-family = !caption_face
+  :font-size 12px
+  
+  :background-color #262626
+  :opacity 0.6
+  :color #ddd
+  
+body
+  :color #333
+  :background white
+
+div#ajax-status
+  :position absolute
+  :width 6em
+  +corner-widget
+
+div#nhs-injection-button
+  :position fixed
+  :width 9em
+  :text-align center
+  +corner-widget
+  
+  a
+    :color #eee
+    :text-decoration underline
+    :cursor pointer
+
+div#nhs-injection-presenter
+  :display none
+  :position fixed
+  :width 40em
+  :height 30em
+  +border-radius(10px)
+  :padding 0.5em 1em
+
+  :background #222
+  :opacity 0.95
+  :color #eee
+  
+  :font-size 14px
+  
+  div#chooser 
+    :position relative
+    :padding 1em
+
+    ul
+      :margin 1em 0
+      :padding 0 5px
+      
+      :background white
+      
+      :list-style none
+      +border-radius(5px)
+
+      li
+        :padding 2em 5px !important
+        :border-bottom 2px solid #ccc
+        
+        :background white
+        :color black
+        :cursor pointer
+        
+        &:last-child
+          :border-bottom none
+
