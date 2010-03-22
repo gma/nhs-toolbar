@@ -1,7 +1,13 @@
 var nhsInject = (function(){
 
 var settings = {
-  apiUrl: 'http://grahamashton.name/api'
+  apiUrl: function() {
+    if (/\/\/localhost/.test(window.location.href)) {
+      return 'http://localhost:9393/api';
+    } else {
+      return 'http://grahamashton.name/api';
+    }
+  }
 };
 
 var app = {
@@ -18,14 +24,13 @@ var app = {
   },
   
   searchForDataSets: function(keywordList) {
-    // var url = settings.apiUrl + '/search?url=http://en.wikipedia.org/wiki/Epilepsy' + '&callback=?';
-    // var url = settings.apiUrl + '/search?url=http://www.asthma.org.uk' + '&callback=?';
-    var url = settings.apiUrl + '/search?url=' + window.location.href + '&callback=?';
+    var current_page = window.location.href;
+    var url = settings.apiUrl() + '/search?url=' + current_page + '&callback=?';
     $.getJSON(url, function(dataSets) {
       if (dataSets.length) {        
         var container = $('#nhs-inject');
-        if (! container.length){
-            container = $('body');
+        if (! container.length) {
+          container = $('body');
         }
       
         $('<div/>', { id: 'nhs-injection-button' })
@@ -112,7 +117,7 @@ var app = {
   showDataSet: function(dataSet) {
     $('#nhs-injection-presenter')
       .append($('<div/>', { id: 'nhs-injection-graph-container' }));
-    var url = settings.apiUrl + '/data-set/' + dataSet['name'] + '?callback=?';
+    var url = settings.apiUrl() + '/data-set/' + dataSet['name'] + '?callback=?';
     $.getJSON(url, function(data) {
       if (data["type"] == "series") {
         app.plotBarChart(data);
