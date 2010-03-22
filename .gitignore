@@ -1,7 +1,6 @@
 ._*
 .bundle
 .DS_Store
-config/config.yml
-content
+api/config/config.yml
 db/*.db
 public/cache
