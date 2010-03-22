@@ -93,6 +93,11 @@ helpers do
   end
 end
 
+get "/css/:sheet.css" do
+  content_type "text/css", :charset => "utf-8"
+  sass(params[:sheet].to_sym)
+end
+
 get "/api-test" do
   haml(:api_test, :layout => :playground)
 end
