@@ -4,6 +4,8 @@ The NHS Toolbar was written for the
 DotGovLabs hack day organise by [Rewired State](http://rewiredstate.org/
 "Rewired State").
 
+Check the [project home page](http://rewiredstate.org/projects/nhs-toolbar) for more information. Screenshots are [on Flickr](http://www.flickr.com/photos/bengriffiths/sets/72157623538428741/).
+
 ## Notes for developers
 
 To run the API server you'll need to install Sinatra. The easiest way to get
