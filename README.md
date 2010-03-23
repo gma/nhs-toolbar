@@ -1,7 +1,7 @@
 # NHS Toolbar
 
 The NHS Toolbar was written for the
-DotGovLabs hack day organise by [Rewired State](http://rewiredstate.org/
+DotGovLabs hack day organised by [Rewired State](http://rewiredstate.org/
 "Rewired State").
 
 Check the [project home page](http://rewiredstate.org/projects/nhs-toolbar) for more information. Screenshots are [on Flickr](http://www.flickr.com/photos/bengriffiths/sets/72157623538428741/).
